@@ -85,7 +85,7 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
         # Около-оформление
         if use_custom_grid:
             step_x = base_step_x
-            min_x = step_x
+            min_x = 0
             max_x = (math.ceil(x0[-1])) + (step_x * 2)
             plt.xticks(np.arange(min_x, max_x, step_x))
             step_y = base_step_y
