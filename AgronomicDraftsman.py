@@ -1,4 +1,5 @@
 import math
+import sys
 from itertools import accumulate
 
 import pandas as pd
@@ -83,13 +84,15 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
 
         # Около-оформление
         if use_custom_grid:
-            min_x = 0
             step_x = base_step_x
-            max_x = (math.ceil(x0[-1])) + (base_step_x * 2)
+            min_x = step_x
+            max_x = (math.ceil(x0[-1])) + (step_x * 2)
             plt.xticks(np.arange(min_x, max_x, step_x))
-            min_y = math.ceil(min(y2)) - 2
-            max_y = math.ceil(max(y1)) + 2
             step_y = base_step_y
+            min_y = math.ceil(min(y2))
+            min_y = min_y - (step_y if min_y % step_y == 0 else min_y % step_y)
+            max_y = math.ceil(max(y1))
+            max_y = max_y + (step_y if max_y % step_y == 0 else max_y % step_y)
             plt.yticks(np.arange(min_y, max_y, step_y))
 
         plt.title(sort_name, fontdict={'size': 40})
