@@ -1,10 +1,9 @@
 import math
 from itertools import accumulate
-from math import floor
-from operator import contains
 
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
@@ -16,7 +15,7 @@ small = 12
 width = 0.5
 color_up = 'g'
 color_down = 'g'
-base_step_x = 1  # Шаг сетки по X, если не может быть расчитан автоматически
+base_step_x = 3  # Шаг сетки по X
 base_step_y = 2  # Шаг сетки по Y
 params = {'axes.titlesize': large,
           'legend.fontsize': med,
@@ -30,6 +29,11 @@ plt.rcParams.update(params)
 
 # Тоже внешний вид, добавляет белые границы для столбцов
 sns.set_style("white")
+
+print(f"numpy v{np.__version__}")  # 2.1.0
+print(f"pandas v{pd.__version__}")  # 2.2.2
+print(f"matplotlib v{mpl.__version__}")  # 3.9.2
+print(f"seaborn v{sns.__version__}")  # 0.13.2
 
 
 def draw_plot(file_name, file_format='png', directory='results', labels=True, use_custom_grid=False):
@@ -79,11 +83,9 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
 
         # Около-оформление
         if use_custom_grid:
-            min_x = math.ceil(min(x0)) - 1
-            max_x = math.ceil(max(x0)) + 1
-            step_x = (max_x - min_x) // ((len(y1) + len(y2)) * 2)
-            if step_x <= 0:
-                step_x = base_step_x
+            min_x = 0
+            step_x = base_step_x
+            max_x = (math.ceil(x0[-1])) + (base_step_x * 2)
             plt.xticks(np.arange(min_x, max_x, step_x))
             min_y = math.ceil(min(y2)) - 2
             max_y = math.ceil(max(y1)) + 2
@@ -107,7 +109,7 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
 
         # Отображение если захочется посмотреть в программе а не в файле
         # Если включить, в файл пойдёт пустое изображение - учитите!
-        #plt.show()
+        # plt.show()
 
         # Создаём папку, куда будут сохранятсья изображения, если её нет
         #  Если нужно изменить название - передаём параметром
@@ -116,7 +118,7 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
         # Сохранение изображения в формате png
         # Если нужно изменить формат - передаём параметром
         plt.savefig(f'{directory}/{sort_name}.{file_format}')
-
+        plt.close()
         if True:
             print(f"{sort_name} успешно обработан.")
 
@@ -125,9 +127,9 @@ if __name__ == '__main__':
     # Имя файла, который загружаем
     # В файле, в именах сортов, НЕ должно содержаться символов по типу /\'" и т.д.
     # Все символы \ заменяются на - , остальные игнорируются и программа НЕ сможет выполниться корректно
-    file_name = 'Example.xlsx'
+    file_name = 'File.xlsx'
     # Непосредственно функция отрисовки
-    draw_plot(file_name, file_format='png', directory='results', labels=False, use_custom_grid=False)
+    draw_plot(file_name, file_format='png', directory='results', labels=False, use_custom_grid=True)
 
     # Пример с другими параметрами
     # draw_plot(file_name, file_format='jpg', directory='something', labels=False)
