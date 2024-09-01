@@ -92,9 +92,9 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
             plt.yticks(np.arange(min_y, max_y, step_y))
             step_x = base_step_x
             min_x = math.ceil(min(y2))
-            min_x = min_x - (step_x if min_x % step_x == 0 else (min_x % step_x))
+            min_x = min_x - (step_x if min_x % step_x == 0 else (min_x % step_x)) - step_x
             max_x = math.ceil(max(y1))
-            max_x = max_x + (step_x if max_x % step_x == 0 else (max_x % step_x) + step_x)
+            max_x = max_x + (step_x if max_x % step_x == 0 else (max_x % step_x) + step_x) + step_x
             x_labels_right = np.arange(0, max_x, step_x)
             x_labels_left = np.arange(min_x, 0, step_x)
             x_labels = append(x_labels_left, x_labels_right)
@@ -108,12 +108,12 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
             # Для верхних листов
             for x, y in zip(x0, y1):
                 if y != 0:
-                    plt.text(y, x, f'Л: {y:.1f}\nМ: {x:.1f}', ha='left', va='top')
+                    plt.text(y, x, f'Л: {y:.1f}\nМ: {x:.1f}', ha='left', va='center')
 
             # Для нижних листов
             for x, y in zip(x0, y2):
                 if y != 0:
-                    plt.text(y, x, f'Л: {y:.1f}\nМ: {x:.1f}', ha='right', va='top')
+                    plt.text(y, x, f'Л: {y:.1f}\nМ: {x:.1f}', ha='right', va='center')
 
         # Отображение если захочется посмотреть в программе а не в файле
         # Если включить, в файл пойдёт пустое изображение - учитите!
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     # Все символы \ заменяются на - , остальные игнорируются и программа НЕ сможет выполниться корректно
     file_name = 'File.xlsx'
     # Непосредственно функция отрисовки
-    draw_plot(file_name, file_format='png', directory='results', labels=False, use_custom_grid=True)
+    draw_plot(file_name, file_format='png', directory='results', labels=True, use_custom_grid=True)
 
     # Пример с другими параметрами
-    # draw_plot(file_name, file_format='jpg', directory='something', labels=False)
+    # draw_plot(file_name, file_format='jpg', directory='something', labels=False, use_custom_grid=False)
