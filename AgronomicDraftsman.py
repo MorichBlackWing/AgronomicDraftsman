@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
+from numpy.ma.core import append
+
 # Настройки внешнего вида, в целом можно отключать, изменять и т.д. как угодно
 large = 22
 med = 16
@@ -17,7 +19,7 @@ width = 0.5
 color_up = 'g'
 color_down = 'g'
 base_step_x = 3  # Шаг сетки по X
-base_step_y = 2  # Шаг сетки по Y
+base_step_y = 5  # Шаг сетки по Y
 params = {'axes.titlesize': large,
           'legend.fontsize': med,
           'figure.figsize': (12, 8),  # Размер изображения
@@ -79,21 +81,24 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
                 y2[i] = 0
 
         # Выбор данных на вывод в график
-        plt.bar(x0, y1, width, facecolor=color_up)
-        plt.bar(x0, y2, width, facecolor=color_down)
+        plt.barh(x0, y1, width, facecolor=color_up)
+        plt.barh(x0, y2, width, facecolor=color_down)
 
         # Около-оформление
         if use_custom_grid:
-            step_x = base_step_x
-            min_x = 0
-            max_x = (math.ceil(x0[-1])) + (step_x * 2)
-            plt.xticks(np.arange(min_x, max_x, step_x))
             step_y = base_step_y
-            min_y = math.ceil(min(y2))
-            min_y = min_y - (step_y if min_y % step_y == 0 else min_y % step_y)
-            max_y = math.ceil(max(y1))
-            max_y = max_y + (step_y if max_y % step_y == 0 else max_y % step_y)
+            min_y = 0
+            max_y = (math.ceil(x0[-1])) + (step_y * 2)
             plt.yticks(np.arange(min_y, max_y, step_y))
+            step_x = base_step_x
+            min_x = math.ceil(min(y2))
+            min_x = min_x - (step_x if min_x % step_x == 0 else (min_x % step_x))
+            max_x = math.ceil(max(y1))
+            max_x = max_x + (step_x if max_x % step_x == 0 else (max_x % step_x) + step_x)
+            x_labels_right = np.arange(0, max_x, step_x)
+            x_labels_left = np.arange(min_x, 0, step_x)
+            x_labels = append(x_labels_left, x_labels_right)
+            plt.xticks(x_labels)
 
         plt.title(sort_name, fontdict={'size': 40})
         plt.grid(True)
@@ -103,12 +108,12 @@ def draw_plot(file_name, file_format='png', directory='results', labels=True, us
             # Для верхних листов
             for x, y in zip(x0, y1):
                 if y != 0:
-                    plt.text(x, y + 0.05, f'Л: {y:.3f}\nМ: {x:.3f}', ha='center', va='bottom')
+                    plt.text(y, x, f'Л: {y:.1f}\nМ: {x:.1f}', ha='left', va='top')
 
             # Для нижних листов
             for x, y in zip(x0, y2):
                 if y != 0:
-                    plt.text(x, y - 0.05, f'Л: {y:.3f}\nМ: {x:.3f}', ha='center', va='top')
+                    plt.text(y, x, f'Л: {y:.1f}\nМ: {x:.1f}', ha='right', va='top')
 
         # Отображение если захочется посмотреть в программе а не в файле
         # Если включить, в файл пойдёт пустое изображение - учитите!
